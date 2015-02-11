@@ -9,7 +9,8 @@ The **first part** of the code loads the data and adjusts the class of the **dat
 variable. Default class is factor, so I use strptime() function to convert it to 
 POSIXlt.
 
-```{r first}
+
+```r
 data<-read.csv("activity.csv",header=T)
 data$date<-strptime(data$date,"%Y-%m-%d")
 ```
@@ -23,11 +24,28 @@ order for this function to work, variable **date** was converted to character
 - mean of **steps.daily** is calculated and printed
 - median of **steps.daily** is calculated and printed
 
-```{r second}
+
+```r
 steps.daily<-with(data,tapply(steps,as.character(date),sum))
 hist(steps.daily)
+```
+
+![plot of chunk second](figure/second-1.png) 
+
+```r
 mean(steps.daily,na.rm=T)
+```
+
+```
+## [1] 10766.19
+```
+
+```r
 median(steps.daily,na.rm=T)
+```
+
+```
+## [1] 10765
 ```
 
 The **third part** of the code does the following:
@@ -43,11 +61,21 @@ followed by match() function which locates this maximum in the **mean.interval**
 vector. This location was then applied to **interval.list** in order to find the 
 appropriate interval.
 
-```{r third}
+
+```r
 mean.interval<-with(data,tapply(steps,interval,mean,na.rm=T))
 interval.list<-unique(data$interval)
 plot(interval.list,mean.interval,type='l')
+```
+
+![plot of chunk third](figure/third-1.png) 
+
+```r
 interval.list[match(max(mean.interval),mean.interval)]
+```
+
+```
+## [1] 835
 ```
 
 The **fourth part** of the code does the following:
@@ -66,9 +94,24 @@ plotted.
 - In the end, the code calculates the mean and median for the **steps.daily.new** 
 variable
 
-```{r fourth}
+
+```r
 sum(is.na(data[1:3]))
+```
+
+```
+## [1] 2304
+```
+
+```r
 sum(is.na(data[1]))
+```
+
+```
+## [1] 2304
+```
+
+```r
 data.new<-data
 for (i in 1:length(data.new[[1]])) {
           if (is.na(data.new[[1]][i])==T) {
@@ -78,8 +121,24 @@ for (i in 1:length(data.new[[1]])) {
 }
 steps.daily.new<-with(data.new,tapply(steps,as.character(date),sum))
 hist(steps.daily.new)
+```
+
+![plot of chunk fourth](figure/fourth-1.png) 
+
+```r
 mean(steps.daily.new)
+```
+
+```
+## [1] 10766.19
+```
+
+```r
 median(steps.daily.new)
+```
+
+```
+## [1] 10766.19
 ```
 
 The effects of replacing NA values with interval means are minimal. Mean of 
@@ -109,7 +168,8 @@ weekdays and the other only weekends.
 - In the end, the code plots **interval.list** to the means per interval and these
 plots are presented in a panel for the two datasets.
 
-```{r fifth}
+
+```r
 data$weekday<-weekdays(data$date)
 day<-c('Monday','Tuesday','Wednesday','Thursday','Friday')
 data$weekday[data$weekday %in% day]<-'Weekday'
@@ -122,3 +182,5 @@ par(mfrow=c(2,1))
 plot(interval.list,mean.interval.weekday,type='l')
 plot(interval.list,mean.interval.weekend,type='l')
 ```
+
+![plot of chunk fifth](figure/fifth-1.png) 
